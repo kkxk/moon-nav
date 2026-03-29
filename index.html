@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>月亮导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a1028 0%, #1a3a5a 50%, #0f4c6e 100%);
+            background-size: cover;
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px 15px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* 网站标题 */
+        .site-title {
+            text-align: center;
+            font-size: 30px;
+            font-weight: 600;
+            margin-bottom: 50px;
+            color: rgba(255,255,255,0.95);
+        }
+
+        /* 搜索区域 */
+        .search-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 50px;
+            width: 100%;
+        }
+
+        /* 搜索引擎选项 */
+        .search-engine {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0 10px;
+        }
+
+        .engine-item {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .engine-item.active {
+            background: #2196f3;
+            color: #fff;
+        }
+
+        .engine-item:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* 搜索框区域 */
+        .search-box-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 700px;
+            padding: 0 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            height: 42px;
+            padding: 0 20px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: rgba(255,255,255,0.25);
+        }
+
+        .search-btn {
+            width: 80px;
+            height: 42px;
+            border: none;
+            border-radius: 8px;
+            background: #2196f3;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* 工具分类区域 - 自适应布局 */
+        .category-section {
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .category-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* 工具网格 - 核心自适应：手机双列，大屏多列 */
+        .category-grid {
+            display: grid;
+            /* 手机端双列，大屏自动扩展 */
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            padding: 9px 16px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            text-decoration: none;
+        }
+
+        .category-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .category-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+            border-radius: 6px;
+            object-fit: contain;
+            background: rgba(255,255,255,0.1);
+            padding: 1px;
+        }
+
+        .category-name {
+            font-size: 16px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* 底部区域 */
+        .footer {
+            margin-top: 80px;
+            padding: 20px 10px;
+        }
+
+        .footer-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+            margin-bottom: 15px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer-text {
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.8;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-text a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s ease;
+        }
+
+        .footer-text a:hover {
+            color: #2196f3;
+        }
+
+        /* 小屏幕适配（手机）- 强制双列 */
+        @media (max-width: 480px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr); /* 手机端强制双列 */
+                gap: 10px;
+            }
+            .search-box-wrapper {
+                gap: 8px;
+            }
+            .search-input {
+                height: 40px;
+                padding: 0 15px;
+            }
+            .search-btn {
+                height: 40px;
+                width: 70px;
+            }
+        }
+
+        /* 平板适配 */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr); /* 平板端三列 */
+            }
+        }
+
+        /* 大屏适配 */
+        @media (min-width: 769px) {
+            .category-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 大屏多列 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 网站标题 -->
+        <div class="site-title">月亮导航</div>
+
+        <!-- 搜索区域 -->
+        <div class="search-area">
+            <!-- 搜索引擎选项 -->
+            <div class="search-engine">
+                <div class="engine-item active" data-engine="bing">必应</div>
+                <div class="engine-item" data-engine="baidu">百度</div>
+                <div class="engine-item" data-engine="google">谷歌</div>
+                <div class="engine-item" data-engine="360">360搜索</div>
+                <div class="engine-item" data-engine="sogou">搜狗</div>
+                <div class="engine-item" data-engine="yandex">Yandex</div>
+            </div>
+
+            <!-- 搜索框和按钮 -->
+            <div class="search-box-wrapper">
+                <input type="text" class="search-input" placeholder="请输入搜索内容...">
+                <button class="search-btn">搜索</button>
+            </div>
+        </div>
+
+        <!-- 常用网站 -->
+        <div class="category-section">
+            <div class="category-title">常用网站</div>
+            <div class="category-grid">
+                
+                <a href="https://www.google.com/" target="_blank" class="category-item">
+                    <img src="icons/google.png" class="category-icon">
+                    <div class="category-name">Google</div>
+                </a>
+				<a href="https://cn.bing.com/" target="_blank" class="category-item">
+				    <img src="icons/bing.png" class="category-icon">
+				    <div class="category-name">必应</div>
+				</a>
+				<a href="https://www.baidu.com/" target="_blank" class="category-item">
+				    <img src="icons/baidu.png" class="category-icon">
+				    <div class="category-name">百度</div>
+				</a>
+				<a href="https://www.qq.com/" target="_blank" class="category-item">
+				    <img src="icons/tengxun.png" class="category-icon">
+				    <div class="category-name">腾讯网</div>
+				</a>
+				<a href="https://filehelper.weixin.qq.com/" target="_blank" class="category-item">
+				    <img src="icons/zhushou.png" class="category-icon">
+				    <div class="category-name">微信传文件</div>
+				</a>
+				<a href="https://github.com/" target="_blank" class="category-item">
+				    <img src="icons/github.png" class="category-icon">
+				    <div class="category-name">GitHub</div>
+				</a>
+				<a href="https://www.163.com/" target="_blank" class="category-item">
+				    <img src="icons/wangyi.png" class="category-icon">
+				    <div class="category-name">网易</div>
+				</a>
+				<a href="https://www.sohu.com/" target="_blank" class="category-item">
+				    <img src="icons/souhu.png" class="category-icon">
+				    <div class="category-name">搜狐</div>
+				</a>
+				<a href="https://www.sina.com.cn/" target="_blank" class="category-item">
+				    <img src="icons/sina.png" class="category-icon">
+				    <div class="category-name">新浪网</div>
+				</a>
+				<a href="https://weibo.com/" target="_blank" class="category-item">
+				    <img src="icons/weibo.png" class="category-icon">
+				    <div class="category-name">微博</div>
+				</a>
+				<a href="https://www.bilibili.com/" target="_blank" class="category-item">
+				    <img src="icons/bilibili.png" class="category-icon">
+				    <div class="category-name">哔哩哔哩</div>
+				</a>
+				<a href="https://www.taobao.com/" target="_blank" class="category-item">
+				    <img src="icons/taobao.png" class="category-icon">
+				    <div class="category-name">淘宝</div>
+				</a>
+				<a href="https://www.jd.com/" target="_blank" class="category-item">
+				    <img src="icons/jingdong.png" class="category-icon">
+				    <div class="category-name">京东</div>
+				</a>
+				<a href="https://www.doubao.com/" target="_blank" class="category-item">
+				    <img src="icons/doubao.png" class="category-icon">
+				    <div class="category-name">豆包</div>
+				</a>
+				<a href="https://www.qianwen.com/" target="_blank" class="category-item">
+				    <img src="icons/qianwen.png" class="category-icon">
+				    <div class="category-name">千问</div>
+				</a>
+                
+            </div>
+        </div>
+		
+		<!-- 分类名称 -->
+		<div class="category-section">
+		    <div class="category-title">分类名称</div>
+		    <div class="category-grid">
+		        
+		        <a href="https://1ktools.com/zh-cn/tools/network/favicon" target="_blank" class="category-item">
+		            <img src="icons/tubiao.png" class="category-icon">
+		            <div class="category-name">网站图标获取</div>
+		        </a>
+				<a href="https://webicon.cc/zh-cn/" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">获取网站图标</div>
+				</a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				
+		    </div>
+		</div>
+		
+		<!-- 分类名称 -->
+		<div class="category-section">
+		    <div class="category-title">分类名称</div>
+		    <div class="category-grid">
+		        
+		        <a href="#" target="_blank" class="category-item">
+		            <img src="icons/tubiao.png" class="category-icon">
+		            <div class="category-name">网站名称</div>
+		        </a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				<a href="#" target="_blank" class="category-item">
+				    <img src="icons/tubiao.png" class="category-icon">
+				    <div class="category-name">网站名称</div>
+				</a>
+				
+		    </div>
+		</div>
+		
+
+        <!-- 底部区域 -->
+        <div class="footer">
+            <div class="footer-divider"></div>
+            <div class="footer-text">
+				
+                <div>moon-nav</div>
+                <div>
+                     月亮导航 | 
+                    <a href="https://github.com" target="_blank">开源地址</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 搜索引擎配置（默认必应）
+        const searchEngines = {
+            bing: "https://cn.bing.com/search?q=",
+            baidu: "https://www.baidu.com/s?wd=",
+            google: "https://www.google.com/search?q=",
+            360: "https://www.so.com/s?q=",
+            sogou: "https://www.sogou.com/web?query=",
+            yandex: "https://yandex.com/search/?text="
+        };
+
+        // 当前选中的搜索引擎（默认必应）
+        let currentEngine = "bing";
+
+        // 获取DOM元素
+        const engineItems = document.querySelectorAll('.engine-item');
+        const searchInput = document.querySelector('.search-input');
+        const searchBtn = document.querySelector('.search-btn');
+
+        // 切换搜索引擎
+        engineItems.forEach(item => {
+            item.addEventListener('click', () => {
+                engineItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                currentEngine = item.dataset.engine;
+            });
+        });
+
+        // 搜索功能 - 保留输入内容
+        function search() {
+            const keyword = searchInput.value.trim();
+            if (keyword) {
+                const searchUrl = searchEngines[currentEngine] + encodeURIComponent(keyword);
+                window.open(searchUrl, '_blank');
+                // 保留输入内容，不清空
+            } else {
+                alert('请输入搜索内容！');
+            }
+        }
+
+        // 搜索按钮点击事件
+        searchBtn.addEventListener('click', search);
+
+        // 回车键触发搜索
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                search();
+            }
+        });
+    </script>
+</body>
+</html>
